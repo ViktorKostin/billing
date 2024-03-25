@@ -1,0 +1,22 @@
+[
+  {
+    "model": "wallet.currency",
+    "pk": 1,
+    "fields": {
+      "country": "RUSSIAN FEDERATION (THE)",
+      "currency": "Russian Ruble",
+      "code": "RUB",
+      "number": 643
+    }
+  },
+  {
+    "model": "wallet.currency",
+    "pk": 2,
+    "fields": {
+      "country": "UNITED STATES OF AMERICA (THE)",
+      "currency": "US Dollar",
+      "code": "USD",
+      "number": 840
+    }
+  }
+]
