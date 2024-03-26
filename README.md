@@ -4,6 +4,13 @@ docker compose build
 docker compose up
 ```
 
+#### Предустановленные пользователи
+| username  | password |
+| ------------- | ------------- |
+| admin  | admin  |
+| user1  | user1  |
+| user2  | user2  |
+
 wallet admin предоставляет 3 модели:
 - Wallet holders
 - Wallets
@@ -86,3 +93,4 @@ GET
     ]
 }
 ```
+
