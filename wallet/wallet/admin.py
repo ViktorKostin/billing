@@ -40,6 +40,9 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = TRANSACTION_FIELDS
     readonly_fields = TRANSACTION_FIELDS
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 class WalletInline(admin.TabularInline):
     model = Wallet
