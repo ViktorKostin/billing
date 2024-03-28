@@ -1,29 +1,56 @@
 from django.contrib import admin
 from django.urls import reverse
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import Wallet, WalletHolder, Transaction
-from .consts import TRANSACTION_FIELDS
+
 
 class TransactionSenderInline(admin.TabularInline):
     model = Transaction
-    fields = TRANSACTION_FIELDS
-    readonly_fields = TRANSACTION_FIELDS
-    list_display = TRANSACTION_FIELDS
+    fields = ("sender", "receiver", "amount", "currency", "created")
+    readonly_fields = ("sender", "receiver", "amount", "currency", "created")
+    list_display = ("sender", "receiver", "amount", "currency", "created")
     fk_name = "sender"
     extra = 0
 
     def has_add_permission(self, request, obj=None):
         return False
 
+    def sender_user(self, obj):
+        return obj.sender.holder.user.username
+
+    def receiver_user(self, obj):
+        return obj.receiver.holder.user.username
+
+    def _sender(self, obj):
+        url = reverse(f"admin:wallet_wallet_change", args=[obj.sender.pk])
+        return mark_safe(f"<a href='{url}'>{obj.sender}</a>")
+
+    def _receiver(self, obj):
+        url = reverse(f"admin:wallet_wallet_change", args=[obj.receiver.pk])
+        return mark_safe(f"<a href='{url}'>{obj.receiver}</a>")
+
 
 class TransactionReceiverInline(admin.TabularInline):
     model = Transaction
-    fields = TRANSACTION_FIELDS
-    readonly_fields = TRANSACTION_FIELDS
+    fields = ("sender_user", "_sender", "receiver_user", "_receiver", "amount", "currency", "created")
+    readonly_fields = ("sender_user", "_sender", "receiver_user", "_receiver", "amount", "currency", "created")
     fk_name = "receiver"
     extra = 0
+
+    def sender_user(self, obj):
+        return obj.sender.holder.user.username
+
+    def receiver_user(self, obj):
+        return obj.receiver.holder.user.username
+
+    def _sender(self, obj):
+        url = reverse(f"admin:wallet_wallet_change", args=[obj.sender.pk])
+        return mark_safe(f"<a href='{url}'>{obj.sender}</a>")
+
+    def _receiver(self, obj):
+        url = reverse(f"admin:wallet_wallet_change", args=[obj.receiver.pk])
+        return mark_safe(f"<a href='{url}'>{obj.receiver}</a>")
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -31,14 +58,20 @@ class TransactionReceiverInline(admin.TabularInline):
 
 class WalletAdmin(admin.ModelAdmin):
     inlines = [TransactionSenderInline, TransactionReceiverInline]
-    list_display = ("holder", "currency", "balance")
+    list_display = ("uid", "holder", "currency", "balance")
     fields = ("holder", "currency", "balance",)
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    fields = ("sender", "receiver", "currency", "amount")
-    list_display = TRANSACTION_FIELDS
-    readonly_fields = TRANSACTION_FIELDS
+    fields = ("sender", "receiver", "currency", "amount", "created")
+    list_display = ("sender_user", "sender", "receiver_user", "receiver", "currency", "created")
+    readonly_fields = ("sender", "receiver", "amount", "currency", "created")
+
+    def sender_user(self, obj):
+        return obj.sender.holder.user.username
+
+    def receiver_user(self, obj):
+        return obj.receiver.holder.user.username
 
     def has_add_permission(self, request, obj=None):
         return False

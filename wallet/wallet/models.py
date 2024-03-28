@@ -35,7 +35,7 @@ class Wallet(models.Model):
     transactions = models.ManyToManyField("Wallet", through="Transaction", through_fields=("sender", "receiver"))
 
     def __str__(self):
-        return f"{self.holder.user.username} / {self.uid}"
+        return f"{self.uid}"
 
 
 class Transaction(models.Model):
@@ -54,7 +54,7 @@ class Transaction(models.Model):
         ordering = ["created"]
 
     def __str__(self):
-        return f"transcaction: {self.uid}"
+        return f"transaction: {self.uid}"
 
     def clean(self):
         list_of_exceptions = []
@@ -71,6 +71,3 @@ class Transaction(models.Model):
         if list_of_exceptions:
             logging.exception(list_of_exceptions)
             raise ValidationError(list_of_exceptions)
-
-
-
